@@ -49,19 +49,21 @@ def clean_description(desc):
     return result if result else desc
 
 def optimize_image(img_path):
-    # Optimizes and converts the image to webp with a max width of 800px using macOS sips
-    webp_path = img_path.rsplit('.', 1)[0] + '.webp'
-    
-    # Check if sips is available (macOS only)
     try:
-        subprocess.run(['sips', '-Z', '800', '-s', 'format', 'webp', img_path, '--out', webp_path], 
-                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        # Remove original file if conversion was successful and it wasn't already webp
+        from PIL import Image
+        webp_path = img_path.rsplit('.', 1)[0] + '.webp'
+        with Image.open(img_path) as img:
+            max_width = 800
+            if img.width > max_width:
+                ratio = max_width / float(img.width)
+                new_height = int((float(img.height) * float(ratio)))
+                img = img.resize((max_width, new_height), Image.Resampling.LANCZOS)
+            img.save(webp_path, 'webp', quality=80, method=6)
         if img_path != webp_path:
             os.remove(img_path)
         return webp_path
     except Exception as e:
-        print(f"Warning: Could not convert {img_path} to WebP using sips. Kept original. ({e})")
+        print(f"Warning: Could not convert {img_path} to WebP using Pillow. Kept original. ({e})")
         return img_path
 
 def download_and_optimize_image(image_url):

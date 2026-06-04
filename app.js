@@ -104,7 +104,7 @@ function renderProducts() {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-            <img src="${imageUrl}" alt="${product.name}" class="product-image" data-sku="${product.sku}" loading="lazy" onerror="this.src='assets/placeholder.png'">
+            <img src="${imageUrl}" alt="${product.name}" class="product-image" data-sku="${product.sku}" loading="lazy" onerror="this.onerror=null; this.src='assets/placeholder.png'">
             <div class="product-info">
                 <span class="product-brand">${product.brand}</span>
                 <h3 class="product-name" data-sku="${product.sku}">${product.name}</h3>
@@ -234,7 +234,7 @@ function updateCartUI() {
         const itemEl = document.createElement('div');
         itemEl.className = 'cart-item';
         itemEl.innerHTML = `
-            <img src="${imageUrl}" alt="${item.name}" class="cart-item-img" onerror="this.src='assets/placeholder.png'">
+            <img src="${imageUrl}" alt="${item.name}" class="cart-item-img" onerror="this.onerror=null; this.src='assets/placeholder.png'">
             <div class="cart-item-details">
                 <div class="cart-item-title">${item.name}</div>
                 <div class="cart-item-price">${formatCurrency(item.price)}</div>
@@ -297,7 +297,7 @@ function openProductModal(sku) {
     modalBody.innerHTML = `
         <div class="modal-top-section">
             <div class="modal-image-container">
-                <img src="${imageUrl}" alt="${product.name}" onerror="this.src='assets/placeholder.png'">
+                <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/placeholder.png'">
             </div>
             <div class="modal-essential-details">
                 <div class="modal-brand">${product.brand}</div>

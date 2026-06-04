@@ -48,6 +48,11 @@ Dado que la tienda no utiliza frameworks pesados ni bases de datos complejas, el
    cd /var/www/html/main/
    sudo git pull origin main
    ```
+   > **Nota de seguridad (Dubious ownership):** Si Git te arroja un error diciendo `fatal: detected dubious ownership`, esto pasa porque le dimos la propiedad de los archivos a `www-data` pero tú eres el usuario `ubuntu` o `root`. Solo debes correr este comando una vez para decirle a Git que la carpeta es segura:
+   > ```bash
+   > sudo git config --global --add safe.directory /var/www/html/main
+   > ```
+   > Y luego vuelve a intentar el `sudo git pull origin main`.
 
 **Pasos de despliegue (Plataformas modernas alternativas como Netlify / Vercel):**
 1. Sube tu carpeta del proyecto a un repositorio en GitHub.
@@ -70,32 +75,44 @@ Para mantener la tienda elegante y orientada 100% al cliente final, debes seguir
 3. Pega la descripción gigante/cruda generada por tu IA o catálogo interno en el campo `"description"`.
 4. Guarda el archivo.
 
-### Paso 2: Agregar las Imágenes
-- Si la imagen proviene del CDN externo, asegúrate de que el campo `"image_url"` tenga la ruta correcta (e.g., `/static/product_images/...`).
-- El código (`app.js`) automáticamente antepone `https://senda.nutrizonecr.com` a las rutas de imágenes, por lo que solo necesitas la ruta relativa.
+### Paso 2: Las Imágenes
+- Si el producto ya tiene una imagen en tu sistema externo (Senda), simplemente asegúrate de que el campo `"image_url"` tenga la ruta original (ej. `/static/product_images/...` o `https://...`).
+- ¡No tienes que descargarla manualmente! Nuestro script se encargará de ello.
 
-### Paso 3: Construir el Catálogo (Limpiar Textos y Descargar Imágenes)
-Para no mostrar notas de vendedores al cliente final, y para asegurar que la tienda cargue de manera ultra-rápida, hemos creado un script maestro en Python llamado `build_catalog.py`.
+### Paso 3: Construir el Catálogo (Magia Automática)
+Para no mostrar notas de vendedores, y para asegurar que las fotos carguen ultra-rápido, tenemos el script maestro `build_catalog.py`.
+
+*Nota inicial: Asegúrate de tener la librería de imágenes instalada corriendo una vez `pip3 install Pillow` en tu computadora.*
 
 1. Abre tu terminal.
 2. Navega hasta la carpeta del proyecto.
-3. Ejecuta el script maestro con el siguiente comando:
+3. Ejecuta el script maestro:
    ```bash
    python3 build_catalog.py
    ```
-4. Verás cómo el script analiza cada producto y te notifica el éxito de la operación.
+4. **¿Qué hace el script?**
+   - **Limpia los textos**: Lee las descripciones crudas de `json-config.json`, extrae inteligentemente solo la información valiosa (Texto Comercial, Beneficios, Ingredientes, Uso), elimina advertencias para vendedores, y formatea todo con etiquetas HTML (`<strong>`).
+   - **Descarga y Optimiza**: Descarga automáticamente cualquier imagen externa a tu carpeta local `assets/products/`, y la convierte al hiper-ligero formato `.webp` usando Pillow.
+   - **Actualiza**: Sobrescribe el `json-config.json` para que ahora el producto apunte a la imagen local súper rápida (ej. `assets/products/imagen.webp`).
 
-**¿Qué hace el script `build_catalog.py`?**
-- **Extrae y Limpia**: Extrae solo el "Texto Comercial", "Beneficios", "Ingredientes", etc., eliminando advertencias para vendedores y formateando en HTML.
-- **Descarga de Imágenes**: Si el producto tiene una imagen remota (`/static/...`), el script la descarga automáticamente a tu carpeta local `assets/products/` para eliminar tiempos de carga externos.
-- **Optimización Local**: El catálogo JSON se actualiza apuntando directamente a tus archivos locales, haciendo que tu aplicación web vuele.
-- **Analiza**: Lee todas las descripciones crudas de `json-config.json`.
-- **Extrae**: Extrae de manera inteligente solo el "Texto Comercial Corto", "Beneficios Principales", "Ingredientes Activos", "Modo de Uso" y la "Presentación".
-- **Limpia**: Elimina advertencias para vendedores, objeciones, notas de IA y textos de cierre de ventas.
-- **Formatea**: Agrega títulos en negrita (`<strong>`) para que el Modal del Producto en la página web se vea increíble.
-- **Guarda**: Sobrescribe el `json-config.json` con el texto limpio.
+### Paso 4: Subir los Cambios a Producción (AWS Lightsail)
+Una vez que probaste localmente y todo se ve bien, el proceso de despliegue a tu tienda en vivo es muy estricto y seguro:
 
-### Paso 4: Subir los Cambios
-1. Prueba localmente abriendo tu servidor de pruebas (por ejemplo `python3 -m http.server`) y verifica el producto en el navegador.
-2. Si todo se ve bien, sube/reemplaza el nuevo archivo `config/json-config.json` a tu servidor en producción.
-3. Al refrescar la página en vivo, los clientes verán los productos actualizados inmediatamente. No necesitas modificar el HTML ni el código JavaScript.
+1. **En tu computadora (Local):** Guarda los cambios en GitHub.
+   ```bash
+   git add .
+   git commit -m "Actualización de catálogo: nuevos productos e imágenes"
+   git push
+   ```
+2. **En tu servidor AWS (Producción):** Conéctate por SSH y fuerza la actualización.
+   ```bash
+   cd /var/www/html/main/
+   
+   # Forzar a que el servidor quede EXACTAMENTE igual a GitHub
+   sudo git fetch origin
+   sudo git reset --hard origin/main
+   
+   # Asegurar permisos correctos
+   sudo chown -R www-data:www-data .
+   ```
+3. ¡Al refrescar la página en vivo, los clientes verán los productos actualizados inmediatamente!
