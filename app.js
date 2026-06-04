@@ -97,12 +97,14 @@ function renderProducts() {
     }
 
     filteredProducts.forEach(product => {
-        const imageUrl = product.image_url ? `${IMAGE_BASE_URL}${product.image_url}` : 'assets/placeholder.png';
+        const imageUrl = product.image_url ? 
+            (product.image_url.startsWith('http') || product.image_url.startsWith('assets/') ? product.image_url : IMAGE_BASE_URL + product.image_url) 
+            : 'assets/placeholder.png';
         
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-            <img src="${imageUrl}" alt="${product.name}" class="product-image" data-sku="${product.sku}" onerror="this.src='assets/placeholder.png'">
+            <img src="${imageUrl}" alt="${product.name}" class="product-image" data-sku="${product.sku}" loading="lazy" onerror="this.src='assets/placeholder.png'">
             <div class="product-info">
                 <span class="product-brand">${product.brand}</span>
                 <h3 class="product-name" data-sku="${product.sku}">${product.name}</h3>
@@ -225,7 +227,9 @@ function updateCartUI() {
 
     cart.forEach(item => {
         totalPrice += item.price * item.quantity;
-        const imageUrl = item.image_url ? `${IMAGE_BASE_URL}${item.image_url}` : 'assets/placeholder.png';
+        const imageUrl = item.image_url ? 
+            (item.image_url.startsWith('http') || item.image_url.startsWith('assets/') ? item.image_url : IMAGE_BASE_URL + item.image_url) 
+            : 'assets/placeholder.png';
         
         const itemEl = document.createElement('div');
         itemEl.className = 'cart-item';
@@ -283,7 +287,9 @@ function openProductModal(sku) {
     const product = products.find(p => p.sku === sku);
     if (!product) return;
 
-    const imageUrl = product.image_url ? `${IMAGE_BASE_URL}${product.image_url}` : 'assets/placeholder.png';
+    const imageUrl = product.image_url ? 
+        (product.image_url.startsWith('http') || product.image_url.startsWith('assets/') ? product.image_url : IMAGE_BASE_URL + product.image_url) 
+        : 'assets/placeholder.png';
     
     // Convert newlines to <br> for HTML rendering
     const formattedDescription = product.description ? product.description.replace(/\n/g, '<br>') : 'Sin descripción disponible.';

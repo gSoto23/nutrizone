@@ -36,7 +36,7 @@ Dado que la tienda no utiliza frameworks pesados ni bases de datos complejas, el
 6. ¡Listo! Ingresa a la IP estática o dominio de tu instancia Lightsail y verás tu tienda en vivo.
 
 **Para futuras actualizaciones (Agregar productos o realizar cambios):**
-1. Haz los cambios localmente en tu computadora (por ejemplo, agrega productos al JSON y corre `python3 update_desc.py`).
+1. Haz los cambios localmente en tu computadora (por ejemplo, agrega productos al JSON y corre `python3 build_catalog.py`).
 2. Sube los cambios a GitHub:
    ```bash
    git add .
@@ -74,18 +74,21 @@ Para mantener la tienda elegante y orientada 100% al cliente final, debes seguir
 - Si la imagen proviene del CDN externo, asegúrate de que el campo `"image_url"` tenga la ruta correcta (e.g., `/static/product_images/...`).
 - El código (`app.js`) automáticamente antepone `https://senda.nutrizonecr.com` a las rutas de imágenes, por lo que solo necesitas la ruta relativa.
 
-### Paso 3: Limpiar las Descripciones (Ejecutar Script de Resumen)
-Para no mostrar notas de vendedores al cliente final, hemos creado un script en Python que analiza el JSON, extrae únicamente lo que el cliente debe ver y lo formatea maravillosamente en HTML.
+### Paso 3: Construir el Catálogo (Limpiar Textos y Descargar Imágenes)
+Para no mostrar notas de vendedores al cliente final, y para asegurar que la tienda cargue de manera ultra-rápida, hemos creado un script maestro en Python llamado `build_catalog.py`.
 
 1. Abre tu terminal.
 2. Navega hasta la carpeta del proyecto.
-3. Ejecuta el script de limpieza con el siguiente comando:
+3. Ejecuta el script maestro con el siguiente comando:
    ```bash
-   python3 update_desc.py
+   python3 build_catalog.py
    ```
-4. Verás el mensaje: `Descriptions updated successfully.`
+4. Verás cómo el script analiza cada producto y te notifica el éxito de la operación.
 
-**¿Qué hace el script?**
+**¿Qué hace el script `build_catalog.py`?**
+- **Extrae y Limpia**: Extrae solo el "Texto Comercial", "Beneficios", "Ingredientes", etc., eliminando advertencias para vendedores y formateando en HTML.
+- **Descarga de Imágenes**: Si el producto tiene una imagen remota (`/static/...`), el script la descarga automáticamente a tu carpeta local `assets/products/` para eliminar tiempos de carga externos.
+- **Optimización Local**: El catálogo JSON se actualiza apuntando directamente a tus archivos locales, haciendo que tu aplicación web vuele.
 - **Analiza**: Lee todas las descripciones crudas de `json-config.json`.
 - **Extrae**: Extrae de manera inteligente solo el "Texto Comercial Corto", "Beneficios Principales", "Ingredientes Activos", "Modo de Uso" y la "Presentación".
 - **Limpia**: Elimina advertencias para vendedores, objeciones, notas de IA y textos de cierre de ventas.
