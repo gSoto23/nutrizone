@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriZoneCR - Tu Zona de Salud y Bienestar</title>
+    <meta name="description" content="NutriZoneCR, tu tienda de suplementos y productos de salud y bienestar. Encuentra vitaminas, colágeno, minerales y más.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- Google Fonts: Inter and Outfit for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/logo.png" alt="NutriZoneCR Logo" id="nav-logo" onerror="this.src=''; this.alt='NutriZoneCR'">
+            </div>
+            <div class="nav-actions">
+                <a href="https://senda.nutrizonecr.com" class="btn-admin" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-user-shield"></i> <span class="hide-mobile">Admin Senda</span>
+                </a>
+                <button class="cart-toggle" id="cart-toggle">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="hero">
+        <div class="hero-image-container">
+            <img src="assets/banner.png" alt="NutriZoneCR Banner" class="hero-banner" onerror="this.style.display='none'">
+        </div>
+    </header>
+
+    <!-- Main Content: Product Catalog -->
+    <main class="catalog">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestros Productos</h2>
+                <div class="filters">
+                    <input type="text" id="text-filter" class="text-filter" placeholder="Buscar por nombre, marca o descripción...">
+                    <select id="category-filter" class="category-filter">
+                        <option value="all">Todas las Categorías</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid" id="products-grid">
+                <!-- Product cards will be injected here via JS -->
+                <div class="loading-spinner">Cargando productos...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button class="close-cart" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be injected here via JS -->
+            <div class="empty-cart-message">Tu carrito está vacío</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">₡0</span>
+            </div>
+            <button class="btn-checkout" id="btn-checkout">
+                <i class="fa-brands fa-whatsapp"></i> Comprar por WhatsApp
+            </button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- Product Description Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be injected here via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2026 NutriZoneCR. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>
